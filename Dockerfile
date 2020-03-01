@@ -8,6 +8,7 @@ FROM ubuntu:18.04
 # And install some additional tools:
 #   - curl
 #   - emacs
+#   - git
 ARG APT_PACKAGES='\
   curl \
   emacs \
@@ -31,5 +32,17 @@ RUN curl -s $MITSCM_URL | tar xvz && \
 
 # Remove Scheme source code.
 RUN rm -rf mit-scheme-${MITSCM_VER}
+
+# Create a default non-root user for safety reasons. Probably best to
+# not run everything as root at runtime.
+ARG USERNAME=dev
+ARG USERID=50000
+RUN adduser --disabled-password --disabled-login --gecos "" -uid $USERID $USERNAME
+
+# Switch to non-root user for safer runtime.
+USER $USERNAME
+
+# Start in home directory.
+WORKDIR /home/$USERNAME
 
 ENTRYPOINT ["/bin/bash"]
