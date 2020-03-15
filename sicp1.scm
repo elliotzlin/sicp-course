@@ -114,3 +114,55 @@ expression and then evaluates the subexpressions as needed. When evaluating
 `test`, the interpreter would substitute the `if` expression for `test`,
 then evaluate the predicate. Because we pass in 0 for `x`, we return the
 `consequent`, which is 0.
+
+
+#| Exercise 1.6 Alyssa P. Hacker doesn't see why `if` needs to be provided
+as a special form. "Why can't I just define it as an ordinary process in
+terms of cond?" she asks. Alyssa's friend Eva Lu Ator claims this can
+indeed be done, and she defines a new version of `if`:
+
+(define (new-if predicate
+          then-clause
+	  else-clause)
+  (cond (predicate then-clause)
+      (else else-clause))
+
+Eva demonstrates the program for Alyssa:
+
+(new-if (= 2 3) 0 5)
+5
+
+(new-if (= 1 1) 0 5)
+0
+
+Delighted, Alyssa uses `new-if` to rewrite the square-root program:
+
+(define (sqrt-iter guess x)
+  (new-if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x) x)))
+
+What happens when Alyssa attempts to use this to compute square roots?
+Explain.
+|#
+
+Alyssa will spawn an infinite loop. The interpreter, which uses
+applicative-order evalutation, will try to evaluate all the parameters of
+`new-if`. This results in an infinite as the interpreter will try to
+evaluate the `else-clause` parameter, which is another invocation of
+`new-if`, and the process will repeat recursively.
+
+
+#| Exercise 1.7 The `good-enough?` test used in computing square roots will
+not be very effective for finding the square roots of very small
+numbers. Also, in real computers, arithmetic operations are almost always
+performed with limited precision. This makes our test inadequate for very
+large numbers. Explain these statements, with examples showing how the test
+fails for small and large numbers. An alternative strategy for implementing
+`good-enough?` is to watch how `guess` changes from one iteration to the
+next and to stop when the change is a very small fraction of the
+guess. Design a square-root procedure that uses this kind of end test. Does
+this work better for small and large numbers?
+|#
+
+Answer goes here.
