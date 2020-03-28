@@ -165,4 +165,61 @@ guess. Design a square-root procedure that uses this kind of end test. Does
 this work better for small and large numbers?
 |#
 
-Answer goes here.
+The `good-enough` test is not adequate for finding the square roots of
+very small numbers because we don't have enough precision. Essentially,
+because we check if the square of our guess is within 0.001 of our number,
+we are more likely to pass the test if the numbers are very small.
+
+At the other end of the extreme, this test is inadequate for very large
+numbers because of hardware limitations. The limited precision spoken of
+refers to how we represent numbers at the level of bits, namely we use
+floating point. Therefore, when multiplying very large numbers together, we
+lose some precision.
+
+;;; The more correct answer for large numbers is that for very large
+;;; numbers, the machine precision is unable to represent small differences
+;;; bewteen large numbers. The algorithm might never terminate as
+;;; good-enough? will always return #f.
+;;;
+;;; An example for small numbers is (sqrt 0.0001), which yields 0.03230844
+;;; instead of 0.01. For a large number, (sqrt 10000000000000), which
+;;; should loop forever with the given implementation.
+
+(define (sqrt-iter guess old-guess x)
+  (if (new-good-enough? guess old-guess)
+      guess
+      (sqrt-iter (improve guess x) guess x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (new-good-enough? guess old-guess)
+  (if (< (/ (abs (- guess old-guess)) old-guess) 0.001)))
+
+
+This does work better for large and small numbers because calculating the
+fraction of the change over the guess uses a relatively constant amount of
+precision because we are calculating relative values.
+
+
+#| Exercise 1.8 Newton's method for cube roots is based on the fact that if y is an
+approximation of the cube root of x, then a better approximation is given
+by the value
+
+x/y^2 + 2y
+__________
+    3
+
+Use this formulat to implement a cube-rot procedure analogous to the
+square-root procedure. (In 1.3.4 we will see how to implement Newton's
+method in general as an abstraction of these square-root and cube-root
+procedures.)
+|#
+
+(define (improve-cube guess x)
+  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+
+(define (cube-root-iter guess old-guess x)
+  (if (new-good-enough? guess old-guess)
+      guess
+      (cube-root-iter (improve-cube guess x) guess x)))
