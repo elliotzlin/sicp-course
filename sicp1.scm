@@ -152,6 +152,11 @@ applicative-order evalutation, will try to evaluate all the parameters of
 evaluate the `else-clause` parameter, which is another invocation of
 `new-if`, and the process will repeat recursively.
 
+Put another way, `new-if` is a procedure and `if` is a special form. Under
+applicative-order evaluation all the sub-expressions of `new-if` are
+evaluated before `new-if` is applied to the value of the operands, whereas
+using `if`, only one of the consequent expressions is evaluated at a time.
+
 
 #| Exercise 1.7 The `good-enough?` test used in computing square roots will
 not be very effective for finding the square roots of very small
@@ -366,3 +371,46 @@ f(n) = 2n
 g(n) = 0 for n = 0, 2^n for n > 0
 
 h(n) = 0 for n = 0, 2^(2^n) for n > 0
+
+
+#| Exercise 1.11 A function f is defined by the rule that f(n) = n if n < 3
+and f(n) = f(n - 1) + 2f(n - 2) + 3f(n - 3) if n >= 3. Write a procedure
+that computes f by means of a recursive process. Write a procedure that
+computes f by means of an iterative process.
+|#
+
+(define (f_recur n)
+  (cond ((< n 3) n)
+	(else (+ (f_recur (- n 1))
+		 (* 2 (f_recur (- n 2)))
+		 (* 3 (f_recur (- n 3)))))))
+
+;; Table of values to visualize how the process unfolds.
+;; n  f(n)
+;; 0  0
+;; 1  1
+;; 2  2
+;; 3  f(2) + 2f(1) + 3f(0) = 2 + 2*1 + 3*0 = 4
+;; 4  f(3) + 2f(2) + 3f(1) = 4 + 2*2 + 3*1 = 11
+;; 5  f(4) + 2f(3) + 3f(2) = 11 + 2*4 + 3*2 = 25
+;; 6  f(5) + 2f(4) + 3f(3) = 25 + 2*11 + 3*4 = 59
+
+(define (f_iter n)
+  (define (f_iter_helper a b c counter max_count)
+    (if (> counter max_count)
+	a
+	(if (< counter 3)
+	    (cond ((= counter 0) (f_iter_helper 0 0 0 (+ counter 1) max_count))
+		  ((= counter 1) (f_iter_helper 1 0 0 (+ counter 1) max_count))
+		  ((= counter 2) (f_iter_helper 2 1 0 (+ counter 1) max_count)))
+	    (f_iter_helper (+ a (* 2 b) (* 3 c) a b) (+ counter 1) max_count))))
+  (f_iter_helper 0 0 n))
+
+;; A better iterative function, perhaps.
+
+(define (f_iter n)
+  (define (f_iter_helper a b c count)
+    (cond ((< count 0) count)
+	  ((= count 0) c)
+	  (else (f_iter_helper (+ a (* 2 b) (* 3 c)) a b (- count 1)))))
+  (f_iter_helper 2 1 0 n))
