@@ -404,7 +404,7 @@ computes f by means of an iterative process.
 		  ((= counter 1) (f_iter_helper 1 0 0 (+ counter 1) max_count))
 		  ((= counter 2) (f_iter_helper 2 1 0 (+ counter 1) max_count)))
 	    (f_iter_helper (+ a (* 2 b) (* 3 c) a b) (+ counter 1) max_count))))
-  (f_iter_helper 0 0 n))
+  (f_iter_helper 0 0 0 0 n))
 
 ;; A better iterative function, perhaps.
 
