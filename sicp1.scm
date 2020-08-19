@@ -414,3 +414,51 @@ computes f by means of an iterative process.
 	  ((= count 0) c)
 	  (else (f_iter_helper (+ a (* 2 b) (* 3 c)) a b (- count 1)))))
   (f_iter_helper 2 1 0 n))
+
+
+#| Exercise 1.12 The following pattern of numbers is called Pascal's
+triangle.
+
+    1
+   1 1
+  1 2 1
+ 1 3 3 1
+1 4 6 4 1
+   ...
+
+The numbers at the edge of the triangle are all 1, and each number inside
+the triangle is the sum of the two numbers above it. Write a procedure that
+computes elements of Pascal's triangle by means of a recursive process.
+|#
+
+;; Footnote on p.42:
+;; The elements of Pascal's triangle are called binomial coefficients
+;; because the nth row consists of the coefficients of the terms in the
+;; expansion (x + y)^n.
+
+;; NOTES
+;; index  value
+;; 1      1      edge
+;; 2      1      edge
+;; 3      1      edge
+;; 4      1      edge
+;; 5      2
+;; 6      1      edge
+;; 7      1      edge
+;; 8      3
+;; 9      3
+;; 10     1      edge
+;; 11     1      edge
+;; 12     4
+;; 13     6
+;; 14     4
+;; 15     1      edge
+;;
+;; Not much help here; have my function take 2 parameters, row and col.
+
+;; Computes the element at row r and column c of Pascal's triangle, where
+;; r and c are 1-indexed and triangle is left-aligned.
+(define (pascal r c)
+  (cond ((or (> c r) (< r 1) (< c 1)) -1)  ; Invalid inputs, return -1.
+	((or (= c 1) (= c r)) 1)  ; 'Edge' case, haha.
+	(else (+ (pascal (- r 1) (- c 1)) (pascal (- r 1) c)))))
