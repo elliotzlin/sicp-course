@@ -462,3 +462,52 @@ computes elements of Pascal's triangle by means of a recursive process.
   (cond ((or (> c r) (< r 1) (< c 1)) -1)  ; Invalid inputs, return -1.
 	((or (= c 1) (= c r)) 1)  ; 'Edge' case, haha.
 	(else (+ (pascal (- r 1) (- c 1)) (pascal (- r 1) c)))))
+
+
+#| Exercise 1.13 Prove that Fib(n) is the closest integer to phi^n /
+sqrt(5), where phi = (1 + sqrt(5)) / 2. Hint: Let psi = (1 - sqrt(5)) /
+2. Use induction and the definition of the Fibonacci numbers (see section
+1.2.2) to prove that Fib(n) = (phi^n - psi^n) / sqrt(5).
+|#
+
+According to the hint, we will first prove Fib(n) = (phi^n - psi^n) /
+sqrt(5), where we define:
+
+phi = (1 + sqrt(5)) / 2
+psi = (1 - sqrt(5)) / 2
+
+Following a proof by induction, we begin with the base case n = 0, 1.
+
+Fib(0) = (phi^0 - psi^0) / sqrt(5) = (1 - 1) / sqrt(5) = 0
+
+Fib(1) = (phi^1 - psi^1) / sqrt(5) = ((1 + sqrt(5))/2 - (1 - sqrt(5))/2) / sqrt(5)
+                                   = sqrt(5) / sqrt(5)
+                                   = 1
+
+For the inductive step, we will show that for any n >= 1, if Fib(n - 1) and
+Fib(n) holds, then Fib(n + 1) also holds, using the definition of the
+Fibonacci sequence.
+
+Fib(n + 1) = Fib(n) + Fib(n - 1)
+           = (phi^n - psi^n) / sqrt(5) + (phi^(n - 1) - psi^(n - 1)) / sqrt(5)
+           = (phi^n + phi^(n - 1) - (psi^n + psi^(n - 1))) / sqrt(5)
+           = (phi^(n - 1) * (phi + 1) - psi^(n - 1) * (psi + 1)) / sqrt(5)
+           = (phi^(n - 1) * ((1 + sqrt(5)) / 2 + 1) - psi^(n - 1) * ((1 - sqrt(5)) / 2 + 1)) / sqrt(5)
+           = (phi^(n - 1) * ((3 + sqrt(5)) / 2) - psi^(n - 1) * ((3 - sqrt(5)) / 2)) / sqrt(5)
+           = (phi^n * 2 / (1 + sqrt(5)) * (3 + sqrt(5)) / 2 - psi^n * 2 / (1 - sqrt(5)) * (3 - sqrt(5)) / 2) / sqrt(5)
+           = (phi^n * (3 + sqrt(5)) / (1 + sqrt(5)) - psi^n * (3 - sqrt(5)) / (1 - sqrt(5))) / sqrt(5)
+           = (phi^n * (3 + sqrt(5)) * (1 - sqrt(5)) / ((1 + sqrt(5))(1 - sqrt(5))) - psi^n * (3 - sqrt(5)) * (1 + sqrt(5)) / ((1 - sqrt(5))(1 + sqrt(5)))) / sqrt(5)
+           = (phi^n * (3 - 2 * sqrt(5) - 5) / (-4) - psi^n * (3 + 2 * sqrt(5) - 5) / (-4)) / sqrt(5)
+           = (phi^n * (2 + 2 * sqrt(5)) / 4 - psi^n * (2 - 2 * sqrt(5)) / 4) / sqrt(5)
+           = (phi^n * (1 + sqrt(5)) / 2 - psi^n * (1 - sqrt(5)) / 2) / sqrt(5)
+           = (phi^n * phi - psi^n * psi) / sqrt(5)
+           = (phi^(n + 1) - psi^(n + 1)) / sqrt(5)
+           = Fib(n + 1)
+
+Having proved Fib(n) = (phi^n - psi^n) / sqrt(5), we observe that:
+
+phi^n / sqrt(5) - Fib(n) = psi^n / sqrt(5)
+
+lim_{n->inf} psi^n / sqrt(5) = lim_{n->inf} (1 - sqrt(5))^n / (2^n * sqrt(5)) = 0
+
+Therefore Fib(n) is the closest integer to phi^n / sqrt(5), where phi = (1 + sqrt(5)) / 2.
