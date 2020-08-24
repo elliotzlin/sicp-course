@@ -507,7 +507,9 @@ Fib(n + 1) = Fib(n) + Fib(n - 1)
 Having proved Fib(n) = (phi^n - psi^n) / sqrt(5), we observe that:
 
 phi^n / sqrt(5) - Fib(n) = psi^n / sqrt(5)
+                         = ((1 - sqrt(5)) / 2)^n / sqrt(5)
 
-lim_{n->inf} psi^n / sqrt(5) = lim_{n->inf} (1 - sqrt(5))^n / (2^n * sqrt(5)) = 0
-
-Therefore Fib(n) is the closest integer to phi^n / sqrt(5), where phi = (1 + sqrt(5)) / 2.
+abs((1 - sqrt(5)) / 2) is roughly abs((1 - 2.23) / 2) is between 0 and
+1. Therefore the distance between Fib(n) and phi^n / sqrt(5) is always less
+than 1, thereby proving Fib(n) is the closest integer to phi^n /
+sqrt(5). QED
