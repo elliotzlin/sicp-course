@@ -632,11 +632,15 @@ a. Here's the evoluation of the process:
 
 `p` is applied 5 times.
 
-b. The space complexity for `(sine a)` is the number of layers in the execution tree. At each step we divide `a` by 3 until. We do this n times. So the inequality looks like:
+b. The space complexity for `(sine a)` is the number of layers in the
+execution tree. At each step we divide `a` by 3 until. We do this n
+times. So the inequality looks like:
+
 a / 3^n = 0.1
 10a = 3^n
 n = log_{3}(10a)
 
 Ignoring constants, the space complexity is theta(log(a)).
 
-The time complexity (number of steps) is follows the same order of growth as the space complexity because the procedure is tail-recursive.
+The time complexity (number of steps) is follows the same order of growth
+as the space complexity.
