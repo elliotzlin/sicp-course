@@ -521,8 +521,79 @@ cents. What are the orders of growth of the space and number of steps used
 by this process as the amount to be changed increases?
 |#
 
-ANSWER HERE
+I swear I did the drawing myself, but I'm pasting an ASCII graph from
+http://community.schemewiki.org/?sicp-ex-1.14
 
+(count-change 11)
+|
+(cc 11 5)__
+|          \
+(cc 11 4)   (cc -39 5)
+|       \___
+|           \
+(cc 11 3)   (cc -14 4)
+|       \_______________________________________________________
+|                                                               \
+(cc 11 2)                                                      (cc 1 3)
+|       \_________________________                              |     \__
+|                                 \                             |        \
+(cc 11 1)                        (cc 6 2)                      (cc 1 2) (cc -9 3)
+|       \___                      |     \__                     |     \__
+|           \                     |        \                    |        \
+(cc 11 0)   (cc 10 1)            (cc 6 1) (cc 1 2)             (cc 1 1) (cc -4 2)
+         __/ |                 __/ |       |     \__            |     \__
+        /    |                /    |       |        \           |        \
+(cc 10 0)   (cc 9 1)  (cc 6 0)   (cc 5 1) (cc 1 1) (cc -4 2)   (cc 1 0) (cc 0 1)
+         __/ |                 __/ |       |     \__
+        /    |                /    |       |        \
+(cc 9 0)    (cc 8 1)  (cc 5 0)   (cc 4 1) (cc 1 0) (cc 0 1)
+         __/ |                 __/ |
+        /    |                /    |
+(cc 8 0)    (cc 7 1)  (cc 4 0)   (cc 3 1)
+         __/ |                 __/ |
+        /    |                /    |
+(cc 7 0)    (cc 6 1)  (cc 3 0)   (cc 2 1)
+         __/ |                 __/ |
+        /    |                /    |
+(cc 6 0)    (cc 5 1)  (cc 2 0)   (cc 1 1)
+         __/ |                 __/ |
+        /    |                /    |
+(cc 5 0)    (cc 4 1)  (cc 1 0)   (cc 0 1)
+         __/ |
+        /    |
+(cc 4 0)    (cc 3 1)
+         __/ |
+        /    |
+(cc 3 0)    (cc 2 1)
+         __/ |
+        /    |
+(cc 2 0)    (cc 1 1)
+         __/ |
+        /    |
+(cc 1 0)    (cc 0 1)
+
+The space complexity will be proportional to the maximum depth of the
+tree. For `count-change` this is theta(n + k) where n is the amount of
+money to make change for and k is the number of denominations.
+
+The time complexity will be proportional to the number of nodes in the
+tree. Assuming there are 5 denominations in total, the call (cc n 1) will
+produce (cc n 0), which returns 0, and (cc (- n 1) 1), which returns 1
+if (- n 1) is 0. This will yield roughly n layers. This will produce a
+total of 2n + 1 nodes.
+
+With this in mind, let us consider (cc n 2). This function call spawns
+a (cc n 1) subtree, which produces 2n + 1 nodes including itself,
+and (cc (- n 5) 2). This second call will produce roughly ceil(n / 5)
+number of (cc _ 2) rooted subtrees, the last of which should return 0 or
+1. Each of these ceil(n / 5) subtrees also produces a (cc _ 1) subtree,
+resulting in 2n + 1 nodes. Therefore, (cc n 2) produces roughly (2n + 1)
++ (ceil(n / 5) - 1)(2n + 1) + 1 nodes. Ignoring the constants, we can see
+the leading term is n^2.
+
+Therefore, if we extrapolate this to any arbitrary number of denominations
+k, we can model the time complexity of this process as theta(n^k), where n
+is the amount of money to be changed.
 
 #| Exercise 1.15 The sine of an angle (specified in radians) can be
 computed by making use of the approximation sin(x) ~ x if x is sufficiently
