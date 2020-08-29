@@ -702,13 +702,30 @@ procedure:
       (+ (* a (- b 1)))))
 
 This algorithm takes a number of steps that is linear in b. Now suppose we
-include, together with addition, operations double, which doubles an
-integer, and halve, which divides an (even) integer by 2. Using these,
+include, together with addition, operations `double`, which doubles an
+integer, and `halve`, which divides an (even) integer by 2. Using these,
 design a multiplication procedure analogous to fast-expt that uses a
 logarithmic number of steps.
 |#
 
-ANSWER
+(define (fast-mult a b)
+  (cond ((= b 0) 0)
+	((even? b) (double (fast-mult a (halve b))))
+	(else (+ a (fast-mult a (- b 1))))))
+
+;; Evolution of the recursive process
+;; (fast-mult 5 9)
+;; (+ 5 (fast-mult 5 8))
+;; (+ 5 (double (fast-mult 5 4)))
+;; (+ 5 (double (double (fast-mult 5 2))))
+;; (+ 5 (double (double (double (fast-mult 5 1)))))
+;; (+ 5 (double (double (double (+ 5 (fast-mult 5 0))))))
+;; (+ 5 (double (double (double (+ 5 0)))))
+;; (+ 5 (double (double (double 5))))
+;; (+ 5 (double (double 10)))
+;; (+ 5 (double 20))
+;; (+ 5 40)
+;; 45
 
 
 #| Exercise 1.18 Using the results of exercises 1.16 and 1.17, devise a
