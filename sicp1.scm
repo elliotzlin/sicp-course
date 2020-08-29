@@ -688,6 +688,20 @@ This represents b^n = b * b^(n - 1)
 				(* a b)))))
   (fast-expt-iter b n 1))
 
+;; UPDATE: This is probably cleaner looking. I don't need to subtract 1,
+;; but I'll keep my other solution as a record.
+(define (expt b n)
+  (define (fast-expt-iter b n a)
+    (cond ((= n 0) a)
+	  ((even? n)
+	   (fast-expt-iter (square b)
+			   (/ n 2)
+			   a))
+	  (else (fast-expt-iter b
+				(- n 1)
+				(* a b)))))
+  (fast-expt-iter b n 1))
+
 
 #| Exercise 1.17 The exponentiation algorithms in this section are based on
 performing exponentiation by means of repeated multiplication. In a similar
@@ -734,7 +748,28 @@ in terms of adding, doubling, and halving and uses a logarithmic number of
 steps.
 |#
 
-ANSWER
+(define (fast-mult a b)
+  (define (fast-mult-iter a b x)
+    (cond ((= b 0) x)
+	  ((even? b) (fast-mult-iter (double a) (- (halve b) 1) (+ x (double a))))
+	  (else (fast-mult-iter a (- b 1) (+ x a)))))
+  (fast-mult-iter a b 0))
+
+;; Evolution of the iterative process
+;; (fast-mult 5 9)
+;; (fast-mult-iter 5 9 0)
+;; (fast-mult-iter 5 8 5)
+;; (fast-mult-iter 10 3 15)
+;; (fast-mult-iter 10 2 25)
+;; (fast-mult-iter 20 0 45)
+;; 45
+
+;; UPDATE: I don't think I needed to subtract 1, but as with the
+;; fast-expt-iter function, I'll leave my work above for the record.
+(define (fast-mult-iter a b x)
+  (cond ((= b 0) x)
+	((even? b) (fast-mult-iter (double a) (halve b) x))
+	(else (fast-mult-iter a (- b 1) (+ x a)))))
 
 
 #| Exercise 1.19 There is a clever algorithm for computing the Fibonacci
