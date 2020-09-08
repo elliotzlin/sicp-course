@@ -909,7 +909,36 @@ applicative-order evaluation?
 divisor of each of the following numbers: 199, 1999, 19999.
 |#
 
-ANSWER
+;; 199
+;; (smallest-divisor 199)
+;; (find-divisor 199 2)
+;; (find-divisor 199 3)
+;; (find-divisor 199 4)
+;; (find-divisor 199 5)
+;; (find-divisor 199 6)
+;; (find-divisor 199 7)
+;; ...
+;; (find-divisor 199 15)
+;; 199
+
+;; 1999
+;; (smallest-divisor 1999)
+;; (find-divisor 1999 2)
+;; (find-divisor 1999 3)
+;; (find-divisor 1999 4)
+;; ...
+;; (find-divisor 1999 45)
+;; 1999
+
+;; 19999
+;; (smallest-divisor 19999)
+;; (find-divisor 19999 2)
+;; (find-divisor 19999 3)
+;; (find-divisor 19999 4)
+;; (find-divisor 19999 5)
+;; (find-divisor 19999 6)
+;; (find-divisor 19999 7)
+;; 7
 
 
 #| Exercise 1.22 Most Lisp implementations include a primitive called
@@ -946,7 +975,22 @@ with the notion that programs on your machine run in time proportional to
 the number of steps required for the computation?
 |#
 
-ANSWER
+(define (search-for-primes lower upper)
+  (define (search-prime-helper n)
+    (cond ((< n upper) (timed-prime-test n) (search-prime-helper (+ n 2)))))
+  (search-prime-helper (if (even? lower) (+ lower 1) lower)))
+
+;; I didn't actually notice any difference in searching for prime numbers
+;; larger than 1000, 10000, and 1000000. I think my machine (a 2013 laptop)
+;; is too fast for me to actually notice any difference.
+
+;; I did see results with values above 1e9.
+(search-for-primes 1000000000 1000000023)     ; In the range 0.05s
+(search-for-primes 10000000000 10000000063)   ; In the range 0.15-0.16s
+(search-for-primes 100000000000 100000000059) ; In the range 0.47-0.48s
+
+;; The timing data certainly bears out that increasing the size of the numbers
+;; checked increases the runtime by sqrt(10), or about 3 seconds.
 
 
 #| Exercise 1.23 The `smallest-divisor` procedure shown at the start of
