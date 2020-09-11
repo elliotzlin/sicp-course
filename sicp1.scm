@@ -1010,7 +1010,28 @@ the two algorithms, and how do you explain the fact that it is different
 from 2?
 |#
 
-ANSWER
+(define (smallest-divisor n)
+  (find-divisor n 2))
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor ) n) n)
+	((divides? test-divisor n) test-divisor)
+	(else (find-divisor n (next test-divisor)))))
+(define (divides? a b)
+  (= (remainder b a) 0))
+(define (next n)
+  (if (= n 2)
+      3
+      (+ n 2)))
+
+;; Running the `search-for-primes` routines from 1.22.
+(search-for-primes 1000000000 1000000023)     ; In the range 0.03-0.04s
+(search-for-primes 10000000000 10000000063)   ; In the range 0.09-0.1s
+(search-for-primes 100000000000 100000000059) ; In the range 0.3-0.32s
+
+;; This algorithm doesn't run twice as fast, but it is faster. The ratio is
+;; instead 3:5 for the faster one to the regular one. We did reduce the number
+;; of divisors tested by half, but we also added an additional `if` call.
+
 
 #| Exercise 1.24 Modify the `timed-prime-test` procedure of exercise 1.22
 to use `fast-prime?` (the Fermat method), and test each of the 12 primes
