@@ -1041,7 +1041,57 @@ the time needed to test primes near 1000? Do your data bear this out? Can
 you explain any discrepancy you find?
 |#
 
-ANSWER
+;; The time needed to test each prime depends on the time performance of
+;; the Fermat test, which has theta(log n) growth. Therefore, increasing n
+;; by 10 times would yield the new runtime of log(10n), which is log(10) +
+;; log(n), which indicates constant time. This can be explained by the fact
+;; that we bound the number of steps the Fermat test takes by limiting the
+;; number of attempts.
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((fermat-test n) (fast-prime? n (- times 1)))
+        (else false)))
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+(define (start-prime-test n start-time)
+  (if (fast-prime? n 100)
+      (report-prime (- (runtime) start-time))))
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+(timed-prime-test 1000000007)   ; 1.0000000000000009e-2
+(timed-prime-test 1000000009)   ; 9.999999999999995e-3
+(timed-prime-test 1000000021)   ; 2.0000000000000018e-2
+(timed-prime-test 10000000019)  ; 9.999999999999981e-3
+(timed-prime-test 10000000033)  ; 1.0000000000000009e-2
+(timed-prime-test 10000000061)  ; 9.999999999999981e-3
+(timed-prime-test 100000000003) ; 1.0000000000000009e-2
+(timed-prime-test 100000000019) ; 1.0000000000000009e-2
+(timed-prime-test 100000000057) ; 1.0000000000000009e-2
+(timed-prime-test 1000000000039); 1.0000000000000009e-2
+(timed-prime-test 1000000000061); 0.01999999999999999
+(timed-prime-test 1000000000063); 2.0000000000000018e-2
+
+;; The data bear this out.
 
 
 #| Exercise 1.25 Alyssa P. Hacker complains that we went to a lot of extra
