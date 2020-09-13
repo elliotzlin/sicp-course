@@ -1107,7 +1107,44 @@ Is she correct? Would this procedure serve as well for our fast prime
 tester? Explain.
 |#
 
-ANSWER
+;; Let us observe the execution of (expmod 2 5 5) using the textbook
+;; method.
+(expmod 2 5 5)
+(remainder (* 2 (expmod 2 4 5)) 5)
+(remainder (* 2 (remainder (square (expmod 2 2 5)) 5)) 5)
+(remainder (* 2 (remainder (square (remainder (square (expmod 2 1 5)) 5)) 5)) 5)
+(remainder (* 2 (remainder (square (remainder (square (remainder (* 2 (expmod 2 0 5)) 5)) 5)) 5)) 5)
+(remainder (* 2 (remainder (square (remainder (square (remainder (* 2 1) 5)) 5)) 5)) 5)
+(remainder (* 2 (remainder (square (remainder (square (remainder 2 5)) 5)) 5)) 5)
+(remainder (* 2 (remainder (square (remainder (square 2) 5)) 5)) 5)
+(remainder (* 2 (remainder (square (remainder 4 5)) 5)) 5)
+(remainder (* 2 (remainder (square 4) 5)) 5)
+(remainder (* 2 (remainder 16 5)) 5)
+(remainder (* 2 1) 5)
+(remainder 2 5)
+2
+
+;; Now let us observe the execution of this call using Alyssa P. Hacker's
+;; way.
+(expmod 2 5 5)
+(remainder (fast-expt 2 5) 5)
+(remainder (* 2 (fast-expt 2 4)) 5)
+(remainder (* 2 (square (fast-expt 2 2))) 5)
+(remainder (* 2 (square (square (fast-expt 2 1)))) 5)
+(remainder (* 2 (square (square (* 2 (fast-expt 2 0))))) 5)
+(remainder (* 2 (square (square (* 2 1)))) 5)
+(remainder (* 2 (square (square 2))) 5)
+(remainder (* 2 (square 4)) 5)
+(remainder (* 2 16) 5)
+(remainder 32 5)
+2
+
+;; One key difference is with the textbook implementation we never have to
+;; compute `remainder` on values much larger than `m`. We don't have to
+;; square successively bigger numbers. For small values of `m` this
+;; probably doesn't make a huge difference, but once we start searching for
+;; large prime numbers we could see a performance hit from having to divide
+;; large numbers.
 
 
 #| Exercise 1.26 Louis Reasoner is having great difficulty doing exercise
