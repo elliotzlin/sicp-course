@@ -1183,11 +1183,35 @@ theta(log n) process into a theta(n) process." Explain.
 
 #| Exercise 1.27 Demonstrate that the Carmichael numbers listed in footnote
 47 really do fool the Fermat test. That is, write a procedure that takes an
-integer n and tests whether a^n is congruent to a modulo n for every a < n,
-and try your procedure on the given Carmichael numbers.
+integer `n` and tests whether `a^n` is congruent to `a` modulo n for every
+`a < n`, and try your procedure on the given Carmichael numbers.
 |#
 
-ANSWER
+;; Code for this exercise:
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (fermat-test-all n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (define (try-it-all iter)
+    (cond ((= iter n) #t)
+	  ((try-it iter) (try-it-all (+ iter 1)))
+	  (else #f)))
+  (try-it-all 1))
+
+(fermat-test-all 561)  ; #t
+(fermat-test-all 1105) ; #t
+(fermat-test-all 1729) ; #t
+(fermat-test-all 2465) ; #t
+(fermat-test-all 6601) ; #t
 
 
 #| Exercise 1.28 One variant of the Fermat test that cannot be fooled is
