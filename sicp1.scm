@@ -1236,4 +1236,38 @@ non-primes. Hint: One convenient way to make `expmod` signal is to have it
 return 0.
 |#
 
-ANSWER
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+	 (if (and (> base 1)
+		  (< base (- m 1))
+		  (= (remainder (square base) m) 1))
+	     0  ; Discovered a nontrivial square root of 1 modulo m
+	     (remainder (square (expmod base (/ exp 2) m))
+			m)))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (miller-rabin-test n)
+  (define (try-it a)
+    (= (expmod a (- n 1) n) 1))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((miller-rabin-test n) (fast-prime? n (- times 1)))
+        (else false)))
+
+;; Test on some known primes.
+(fast-prime? 7 100)          ; #t
+(fast-prime? 17 100)         ; #t
+(fast-prime? 1000000007 100) ; #t
+
+;; Test on the smallest few Carmichael numbers.
+
+(fast-prime? 561 100)  ; #f
+(fast-prime? 1105 100) ; #f
+(fast-prime? 1729 100) ; #f
+(fast-prime? 2465 100) ; #f
+(fast-prime? 6601 100) ; #f
