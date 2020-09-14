@@ -1170,12 +1170,15 @@ Eva. "By writing the procedure like that, you have transformed the
 theta(log n) process into a theta(n) process." Explain.
 |#
 
-Given that the Scheme interpreter uses applicative-order evaluation, which
-evaluates the parameters to a function as needed, the interpreter will be
-evaluating `(expmod base (/ exp 2) m)` twice every time `exp` is
-even. Though we cut the exponent in half every time we hit an even
-exponent, we double the number of nodes in our evaluation tree, effectively
-negating that optimization.
+;; Given that the Scheme interpreter uses applicative-order evaluation, which
+;; evaluates the parameters to a function as needed, the interpreter will be
+;; evaluating `(expmod base (/ exp 2) m)` twice every time `exp` is
+;; even. Though we cut the exponent in half every time we hit an even
+;; exponent, we double the number of nodes in our evaluation tree, effectively
+;; negating that optimization.
+;;
+;; Another way to put it is the rewritten `expmod` turns a linear recursion
+;; into a tree recursion.
 
 
 #| Exercise 1.27 Demonstrate that the Carmichael numbers listed in footnote
