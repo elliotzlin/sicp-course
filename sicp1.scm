@@ -1323,7 +1323,14 @@ definition:
 ```
 |#
 
-ANSWER
+(define (sum term a next b)
+  (define (iter a result)
+    (if (> a b)
+	result
+	(iter (next a) (+ (term a) result))))
+  (iter a 0))
+
+(sum cube 0 inc 10)  ; 3025
 
 
 #| Exercise 1.31
