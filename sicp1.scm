@@ -1384,6 +1384,12 @@ write one that generates a recursive process.
         (iter (next a) (* (term a) result))))
   (iter a 1))
 
+;; A much better `pi-term` read online. :facepalm:
+(define (pi-term n)
+  (if (even? n)
+      (/ (+ n 2) (+ n 1))
+      (/ (+ n 1) (+ n 2))))
+
 
 #| Exercise 1.32
 a. Show that `sum` and `product` (exercise 1.31) are both special cases of
