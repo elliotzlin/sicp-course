@@ -1350,7 +1350,39 @@ that generates an iterative process. If it generates an iterative process,
 write one that generates a recursive process.
 |#
 
-ANSWER
+;; Part a
+(define (product term a next b)
+  (if (> a b)
+      1
+      (* (term a)
+	 (product term (next a) next b))))
+
+(define (factorial n)
+  (define (inc x) (+ x 1))
+  (define (identity x) x)
+  (product identity 1 inc n))
+
+(define (pi-product a b)
+  (define (pi-term x)
+    (define (pi-num n)
+      (+ 2 (* 2 (floor (/ n 2)))))
+    (define (pi-denom n)
+      (+ 3 (* 2(floor (/ (- n 1) 2)))))
+    (/ (* 1.0 (pi-num x)) (pi-denom x)))
+  (define (inc x) (+ x 1))
+  (product pi-term a inc b))
+
+(* 4 (pi-product 1 4))   ; 3.4133333333333327
+(* 4 (pi-product 1 10))  ; 3.275101041334807
+(* 4 (pi-product 1 100)) ; 3.1570301764551645
+
+;; Part b
+(define (product term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (* (term a) result))))
+  (iter a 1))
 
 
 #| Exercise 1.32
