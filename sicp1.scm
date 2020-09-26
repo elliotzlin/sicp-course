@@ -1440,7 +1440,7 @@ in the range that satisfy a specified condition. The resulting
 `filtered-accumulate` abstraction takes the same arguments as accumulate,
 together with an additional predicate of one argument that specifies the
 filter. Write `filtered-accumulate` as a procedure. Show how to express the
-following using `filtered-accumulate1`:
+following using `filtered-accumulate`:
 
 a. the sum of the squares of the prime numbers in the interval `a` to
 `b` (assuming that you have a `prime?` predicate already written)
@@ -1450,4 +1450,55 @@ relatively prime to `n` (i.e., all positive integers `i < n` such that
 `GCD(i,n) = 1`).
 |#
 
-ANSWER
+;; Recursive version
+(define (filtered-accumulate filter combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (if (filter a)
+		    (term a)
+		    null-value)
+		(filtered-accumulate filter combiner null-value term (next a) next b))))
+
+;; Iterative version
+(define (filtered-accumulate filter combiner null-value term a next b)
+  (define (iter a result)
+    (if (> a b)
+	result
+	(iter (next a) (combiner (if (filter a)
+				     (term a)
+				     null-value)
+				 result))))
+  (iter a null-value))
+
+;; a. Sum of square primes
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (if (= n 1)
+      #f
+      (= n (smallest-divisor n))))
+
+(define (identity x) x)
+
+(define (inc x) (+ x 1))
+
+(define (sum-prime-squares a b)
+  (filtered-accumulate prime? + 0 square a inc b))
+
+;; b. Product of positive integers less than `n` relatively prime to `n`.
+
+(define (relative-prime? i n)
+  (= (gcd i n) 1))
+
+(define (product-relative-prime n)
+  (accumulate relative-prime? * 1 identity 1 inc n))
