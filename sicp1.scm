@@ -1393,7 +1393,7 @@ write one that generates a recursive process.
 
 #| Exercise 1.32
 a. Show that `sum` and `product` (exercise 1.31) are both special cases of
-a still more general notion called `accumulate` that combins a collection
+a still more general notion called `accumulate` that combines a collection
 of terms, using some general accumulation function:
 
 ```
@@ -1412,7 +1412,25 @@ that generates an iterative process. If it generates an iterative process,
 write one that generates a recursive process.
 |#
 
-ANSWER
+;; a. Recursive process
+(define (accumulate combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (term a)
+		(accumulate combiner null-value term (next a) next b))))
+
+;; b. Iterative process
+(define (accumulate combiner null-value term a next b)
+  (define (iter a result)
+    (if (> a b)
+	result
+	(iter (next a) (combiner (term a) result))))
+  (iter a null-value))
+
+;; Define `sum` and `product` with `accumulate`
+(define (sum term a next b) (accumulate + 0 term a next b))
+
+(define (product term a next b) (accumulate * 1 term a next b))
 
 
 #| Exercise 1.33 You can obtain an even more general version of
