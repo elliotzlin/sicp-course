@@ -1502,3 +1502,26 @@ relatively prime to `n` (i.e., all positive integers `i < n` such that
 
 (define (product-relative-prime n)
   (accumulate relative-prime? * 1 identity 1 inc n))
+
+
+#| Exercise 1.34 Suppose we define the procedure:
+```
+(define (f g)
+  (g 2))
+```
+Then we have:
+```
+(f square)
+4
+
+(f (lambda (z) (* z (+ z 1))))
+6
+```
+What happens if we (pervsersely) ask the interpreter to evaluate the
+combination of `(f f)`? Explain.
+|#
+
+If we call `(f f)`, it will call `(f 2)`, which calls `(2 2)`, which will
+error because `2` is not a callable function.
+
+Exact error: `The object 2 is not applicable.`
