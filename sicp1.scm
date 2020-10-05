@@ -1521,10 +1521,10 @@ What happens if we (pervsersely) ask the interpreter to evaluate the
 combination of `(f f)`? Explain.
 |#
 
-If we call `(f f)`, it will call `(f 2)`, which calls `(2 2)`, which will
-error because `2` is not a callable function.
-
-Exact error: `The object 2 is not applicable.`
+;; If we call `(f f)`, it will call `(f 2)`, which calls `(2 2)`, which will
+;; error because `2` is not a callable function.
+;;
+;; Exact error: `The object 2 is not applicable.`
 
 
 #| Exercise 1.35 Show that the golden ratio `phi` (section 1.2.2) is a
@@ -1532,7 +1532,20 @@ fixed point of the transformation `x |-> 1 + 1/x`, and use this fact to
 compute by means of the `fixed-point` procedure.
 |#
 
-ANSWER
+;; To show that the golden ratio is a fixed point of the transformation, we
+;; plug it in to the function.
+;;
+;; f((1 + sqrt(5)) / 2) = 1 + 1 / ((1 + sqrt(5)) / 2)
+;;                      = 1 + 2 / (1 + sqrt(5))
+;;                      = (1 + sqrt(5)) / (1 + sqrt(5)) + 2 / (1 + sqrt(5))
+;;                      = (3 + sqrt(5)) / (1 + sqrt(5))
+;;                      = (3 + sqrt(5)) * (1 - sqrt(5)) / (1 + sqrt(5)) * (1 - sqrt(5))
+;;                      = (3 - 2 * sqrt(5) - 5) / (1 - 5)
+;;                      = (-2 - 2 * sqrt(5)) / (-4)
+;;                      = (1 + sqrt(5)) / 2
+;; Therefore f(phi) = phi. QED.
+
+
 
 
 #| Exercise 1.36 Modify `fixed-point` so that it prints the sequence of
