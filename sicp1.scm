@@ -1673,7 +1673,41 @@ that generates an iterative process. If it generates an iterative process,
 write one that generates a recursive process.
 |#
 
-ANSWER
+;; Note: 1 / phi = 2 / (1 + sqrt(5)) = 0.6180
+;; a. Recursive process
+(define (cont-frac n d k)
+  (define (cont-frac-helper i)
+    (if (= i k)
+	(/ (n i) (d i))
+	(/ (n i) (+ (d i) (cont-frac-helper (+ i 1))))))
+  (cont-frac-helper 1))
+
+(cont-frac (lambda (i) 1.0)
+           (lambda (i) 1.0)
+           11)  ; .6180555555555556
+
+(cont-frac (lambda (i) 1.0)
+           (lambda (i) 1.0)
+           12)  ; .6180257510729613
+;; You need k - 12 to get the required precision.
+
+;; b. Iterative process
+(define (cont-frac n d k)
+  (define (cont-frac-iter i result)
+    (if (= i 0)
+	result
+	(cont-frac-iter (- i 1)
+			(/ (n i)
+			   (+ (d i) result)))))
+  (cont-frac-iter k 1))
+
+(cont-frac (lambda (i) 1.0)
+           (lambda (i) 1.0)
+           10)  ; .6180555555555556
+
+(cont-frac (lambda (i) 1.0)
+           (lambda (i) 1.0)
+           11)  ; .6180257510729613
 
 
 #| Exercise 1.38 In 1737, the Swiss mathematician Leonhard Euler published
