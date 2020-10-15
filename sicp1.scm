@@ -1699,15 +1699,15 @@ write one that generates a recursive process.
 	(cont-frac-iter (- i 1)
 			(/ (n i)
 			   (+ (d i) result)))))
-  (cont-frac-iter k 1))
+  (cont-frac-iter k 0))
 
 (cont-frac (lambda (i) 1.0)
            (lambda (i) 1.0)
-           10)  ; .6180555555555556
+           11)  ; .6180555555555556
 
 (cont-frac (lambda (i) 1.0)
            (lambda (i) 1.0)
-           11)  ; .6180257510729613
+           12)  ; .6180257510729613
 
 
 #| Exercise 1.38 In 1737, the Swiss mathematician Leonhard Euler published
@@ -1748,4 +1748,11 @@ approximation to the tangent function based on Lambert's formula. `K`
 specifies the number of terms to compute, as in exercise 1.37.
 |#
 
-ANSWER
+(define (tan-cf x k)
+  (define (tan-cf-iter i result)
+    (if (= i 0)
+	result
+	(tan-cf-iter (- i 1)
+		     (/ (* x x)
+			(* (- (- (* 2 i) 1) result) 1.0)))))
+  (/ (tan-cf-iter k 0) x))
