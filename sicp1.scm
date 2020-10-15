@@ -1719,7 +1719,17 @@ procedure from exercise 1.37 to approximate `e`, based on Euler's
 expansion.
 |#
 
-ANSWER
+(define (compute-e k)
+  (define (n i) 1)
+  (define (d i)
+    (let ((q (remainder i 3)))
+      (if (or (= q 0) (= q 1))
+	  1
+	  (* 2 (ceiling (/ i 3.0))))))
+  (cont-frac n d k))
+
+(+ 2 (compute-e 50))
+; 2.7182818284590455
 
 
 #| Exercise 1.39 A continued fraction representation of the tangent
