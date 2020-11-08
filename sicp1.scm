@@ -1766,7 +1766,11 @@ the `newtons-method` procedure in expressions of the form
 to approximate zeros of the cubic `x^3 + ax^2 + bx + c`.
 |#
 
-ANSWER
+(define (cubic a b c)
+  (lambda (x) (+ (* x x x)
+		 (* a x x)
+		 (* b x)
+		 c)))
 
 
 #| Exercise 1.41 Define a procedure `double` that takes a procedure of one
@@ -1780,7 +1784,11 @@ is returned by
 ```
 |#
 
-ANSWER
+(define (double f)
+  (lambda (x) (f (f x))))
+
+(((double (double double)) inc) 5)
+; 21
 
 
 #| Exercise 1.42 Let `f` and `g` be two one-argument functions. The
@@ -1793,7 +1801,8 @@ example, if `inc` is a procedure that adds 1 to its argument,
 ```
 |#
 
-ANSWER
+(define (compose f g)
+  (lambda (x) (f (g x))))
 
 
 #| Exercise 1.43 If `f` is a numerical function and `n` is a positive
@@ -1813,7 +1822,17 @@ of `f`. Your procedure should be able to be used as follows:
 Hint: You may find it convenient to use `compose` from exercise 1.42.
 |#
 
-ANSWER
+(define (repeated f n)
+  (if (< n 2)
+      f
+      (compose f (repeated f (- n 1)))))
+
+;; Not my solution, but one I saw online with O(log n) complexity.
+(define (identity x) x)
+(define (repeated f n)
+  (cond ((= n 0) identity)
+	((even? n) (repeated (compose f f) (/ n 2)))
+	(else (compose f (repeated f (- n 1))))))
 
 
 #| Exercise 1.44 The idea of smoothing a function is an important concept
