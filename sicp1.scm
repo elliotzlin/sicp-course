@@ -1847,7 +1847,13 @@ on) to obtained the `n-fold smoothed function`. Show how to generate the
 `repeated` from exercise 1.43.
 |#
 
-ANSWER
+(define (smooth f)
+  (let ((dx 0.0001))
+    (lambda (x) (/ (+ (f (- x dx)) x (+ x dx)) 3))))
+
+;; Generating an n-fold smoothed function.
+(define (n-fold-smooth f n)
+  ((repeated smooth n) f))
 
 
 #| Exercise 1.45 We saw in section 1.3.3 that attempting to compute square
@@ -1866,7 +1872,59 @@ and the `repeated` procedure of exercise 1.43. Assume that any arithmetic
 operations you need are available as primitives.
 |#
 
-ANSWER
+;; From the textbook and previous questions.
+(define tolerance 0.00001)
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (average-damp f)
+  (lambda (x) (average x (f x))))
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (identity x) x)
+(define (repeated f n)
+  (cond ((= n 0) identity)
+	((even? n) (repeated (compose f f) (/ n 2)))
+	(else (compose f (repeated f (- n 1))))))
+
+;; Experimental code
+(define (nth-root-d-damp x n d)
+  (fixed-point ((repeated average-damp d) (lambda (y) (/ x (expt y (- n 1)))))
+	       1.0))
+
+;; Results
+;; n | minimal damp
+;; ________________
+;; 2 | 1
+;; 3 | 1
+;; 4 | 2
+;; 5 | 2
+;; 6 | 2
+;; 7 | 2
+;; 8 | 3
+;; 9 | 3
+;; 10| 3
+;; 11| 3
+;; 12| 3
+;; 13| 3
+;; 14| 3
+;; 15| 3
+;; 16| 4
+
+;; Answer below.
+(define (nth-root n)
+  (lambda (x)
+    (fixed-point ((repeated average-damp (floor (log n 2))) (lambda (y) (/ x (expt y (- n 1)))))
+		 1.0)))
 
 
 #| Exercise 1.46 Several of the numerical methods described in this chapter
@@ -1883,4 +1941,32 @@ enough. Rewrite the `sqrt` procedure of section 1.1.7 and the `fixed-point`
 procedure of section 1.3.3 in terms of `iterative-improve`.
 |#
 
-ANSWER
+(define (iterative-improve good-enough? improve-guess)
+  (lambda (guess)
+    (if (good-enough? guess)
+	guess
+	((iterative-improve good-enough? improve-guess) (improve-guess guess)))))
+
+;; Rewrite `sqrt`
+(define (sqrt x)
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (average x y)
+    (/ (+ x y) 2))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  ((iterative-improve good-enough? improve) 1.0))
+
+;; Rewrite `fixed-point`
+(define tolerance 0.00001)
+(define (fixed-point f guess)
+  (let ((next (f guess)))
+    (define (close-enough? x)
+      (< (abs (- x next)) tolerance))
+    ((iterative-improve close-enough? f) guess)))
+
+;; A simpler answer.
+(define (fixed-point f guess)
+  ((iterative-improve
+    (lambda (x) (< (abs (- x (f x))) 0.0001))
+    f) guess))
