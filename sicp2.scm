@@ -37,7 +37,29 @@ procedures, you'll need a way to print points:
 ```
 |#
 
-ANSWER
+(define (make-point x y)
+  (cons x y))
+
+(define (x-point p)
+  (car p))
+
+(define (y-point p)
+  (cdr p))
+
+(define (make-segment p1 p2)
+  (cons p1 p2))
+
+(define (start-segment s)
+  (car s))
+
+(define (end-segment s)
+  (cdr s))
+
+(define (midpoint-segment s)
+  (let ((start (start-segment s))
+	(end (end-segment s)))
+    (make-point (/ (+ (x-point start) (x-point end)) 2.0)
+		(/ (+ (y-point start) (y-point end)) 2.0))))
 
 
 #| Exercise 2.3 Implement a representation for rectangles in a
